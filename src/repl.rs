@@ -1,5 +1,5 @@
 use core::fmt;
-use std::io;
+use std::{io, process::Command};
 
 enum TokenType {
     Command,  // i.e grep, fzf, echo
@@ -22,6 +22,14 @@ struct Token {
     token_string: String,
 }
 
+fn print_tokens(tokens: &Vec<Token>) {
+    for token in tokens {
+        print!(
+            "TokenType : {}, TokenString : {}\n",
+            token.token_type, token.token_string
+        );
+    }
+}
 pub fn repl_loop() {
     eprint!("RH\n$ ");
     let mut user_input = String::new();
@@ -31,11 +39,39 @@ pub fn repl_loop() {
 
     let user_input_processed = process_input(&user_input);
     let tokens = tokenize(&user_input_processed);
+    print_tokens(&tokens); // NOTE : Just for debuggin, remove later
+    process_tokens(&tokens);
+}
+fn process_tokens(tokens: &Vec<Token>) {
+    let mut command: String = String::new();
+    let mut args = String::new();
     for token in tokens {
-        print!(
-            "TokenType : {}, TokenString : {}\n",
-            token.token_type, token.token_string
-        );
+        match token.token_type {
+            TokenType::Command => {
+                command = token.token_string.to_string();
+            }
+            TokenType::Argument => {
+                args = args + token.token_string.as_str();
+            }
+            _ => {
+                command = String::new();
+                args = args + token.token_string.as_str();
+                execute_command(&command, &args);
+            }
+        }
+    }
+}
+
+fn execute_command(command: &String, args: &String) {
+    let child = Command::new(command)
+        .arg(args)
+        .output()
+        .expect("Failed to start children");
+
+    if child.status.success() {
+        print!("{}", String::from_utf8_lossy(&child.stdout));
+    } else {
+        print!("{}", String::from_utf8_lossy(&child.stderr));
     }
 }
 
@@ -54,6 +90,9 @@ fn tokenize(user_input: &String) -> Vec<Token> {
             tokens.push(token);
         } else if section == "|" || section == "&" || section == ";" || section == ">" {
             command_index = i + 1;
+            if i == user_seperated.len() - 1 {
+                panic!("Do not put a Keyword in the end of the your command");
+            }
             let token = Token {
                 token_type: TokenType::Keyword,
                 token_string: section.to_string(),
