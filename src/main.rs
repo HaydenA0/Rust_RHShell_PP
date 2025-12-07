@@ -1,3 +1,6 @@
+mod repl;
+use crate::repl::repl_loop;
+
 fn main() {
-    println!("Hello, world!");
+    repl_loop();
 }
