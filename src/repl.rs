@@ -56,17 +56,19 @@ fn process_tokens(tokens: &Vec<Token>) {
             _ => {
                 command = String::new();
                 args = args + token.token_string.as_str();
-                execute_command(&command, &args);
             }
         }
     }
+    execute_command(&command, &args);
 }
 
 fn execute_command(command: &String, args: &String) {
-    let child = Command::new(command)
-        .arg(args)
-        .output()
-        .expect("Failed to start children");
+    let mut command = Command::new(command);
+    if !args.is_empty() {
+        command.arg(args);
+    }
+
+    let child = command.output().expect("Failed to start children");
 
     if child.status.success() {
         print!("{}", String::from_utf8_lossy(&child.stdout));
