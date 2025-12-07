@@ -23,6 +23,8 @@ struct Token {
 }
 
 fn print_tokens(tokens: &Vec<Token>) {
+    // NOTE : Used for debuggin but the complier wont shut about
+    // it.
     for token in tokens {
         print!(
             "TokenType : {}, TokenString : {}\n",
@@ -31,16 +33,18 @@ fn print_tokens(tokens: &Vec<Token>) {
     }
 }
 pub fn repl_loop() {
-    eprint!("RH\n$ ");
-    let mut user_input = String::new();
-    io::stdin()
-        .read_line(&mut user_input)
-        .expect("Error Reading");
+    loop {
+        eprint!("RH\n$ ");
+        let mut user_input = String::new();
+        io::stdin()
+            .read_line(&mut user_input)
+            .expect("Error Reading");
 
-    let user_input_processed = process_input(&user_input);
-    let tokens = tokenize(&user_input_processed);
-    print_tokens(&tokens); // NOTE : Just for debuggin, remove later
-    process_tokens(&tokens);
+        let user_input_processed = process_input(&user_input);
+        let tokens = tokenize(&user_input_processed);
+        // print_tokens(&tokens); // NOTE : Just for debuggin, remove later
+        process_tokens(&tokens);
+    }
 }
 fn process_tokens(tokens: &Vec<Token>) {
     let mut command: String = String::new();
@@ -51,7 +55,11 @@ fn process_tokens(tokens: &Vec<Token>) {
                 command = token.token_string.to_string();
             }
             TokenType::Argument => {
-                args = args + token.token_string.as_str();
+                if args.is_empty() {
+                    args += token.token_string.as_str();
+                } else {
+                    args = args + " " + token.token_string.as_str();
+                }
             }
             _ => {
                 command = String::new();
