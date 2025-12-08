@@ -1,6 +1,23 @@
 use core::fmt;
-use std::{io, process::Command};
+use std::{
+    io::{self, Write},
+    process::Command,
+};
 
+pub fn repl_loop() {
+    loop {
+        eprint!("RH\n$ ");
+        let mut user_input = String::new();
+        io::stdin()
+            .read_line(&mut user_input)
+            .expect("Error Reading");
+
+        let user_input_processed = process_input(&user_input);
+        let tokens = tokenize(&user_input_processed);
+        // print_tokens(&tokens); // NOTE : Just for debuggin, remove later
+        process_tokens(&tokens);
+    }
+}
 enum TokenType {
     Command,  // i.e grep, fzf, echo
     Argument, // flags and args
@@ -32,21 +49,9 @@ fn print_tokens(tokens: &Vec<Token>) {
         );
     }
 }
-pub fn repl_loop() {
-    loop {
-        eprint!("RH\n$ ");
-        let mut user_input = String::new();
-        io::stdin()
-            .read_line(&mut user_input)
-            .expect("Error Reading");
 
-        let user_input_processed = process_input(&user_input);
-        let tokens = tokenize(&user_input_processed);
-        // print_tokens(&tokens); // NOTE : Just for debuggin, remove later
-        process_tokens(&tokens);
-    }
-}
 fn process_tokens(tokens: &Vec<Token>) {
+    // BUG : ls -aih | will print out an Error that | is invalid
     let mut command: String = String::new();
     let mut args = String::new();
     for token in tokens {
@@ -61,7 +66,7 @@ fn process_tokens(tokens: &Vec<Token>) {
                     args = args + " " + token.token_string.as_str();
                 }
             }
-            _ => {
+            TokenType::Keyword => {
                 command = String::new();
                 args = args + token.token_string.as_str();
             }
@@ -74,15 +79,20 @@ fn execute_command(command: &String, args: &String) {
     let mut command = Command::new(command);
     if !args.is_empty() {
         command.arg(args);
+        // BUG : takes only one argument instead of the whole thing ls -ai -h
+        // wont work
     }
 
     let child = command.output().expect("Failed to start children");
 
-    if child.status.success() {
-        print!("{}", String::from_utf8_lossy(&child.stdout));
+    let output = if child.status.success() {
+        String::from_utf8_lossy(&child.stdout)
     } else {
-        print!("{}", String::from_utf8_lossy(&child.stderr));
-    }
+        String::from_utf8_lossy(&child.stderr)
+    };
+
+    print!("{}", output);
+    io::stdout().flush().unwrap();
 }
 
 fn tokenize(user_input: &String) -> Vec<Token> {
