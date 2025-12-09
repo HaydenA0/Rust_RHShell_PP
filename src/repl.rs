@@ -131,7 +131,6 @@ fn tokenize(user_input: &String) -> Vec<Token> {
 
 fn process_input(user_input: &String) -> String {
     let user_input_processed = user_input.trim(); // TODO: merge the in " " -> "ab de" becomes "abde"
-    // change of type ahead
     let user_input_processed = user_input_processed
         .split_whitespace()
         .collect::<Vec<&str>>()
