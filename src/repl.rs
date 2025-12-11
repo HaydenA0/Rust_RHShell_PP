@@ -1,8 +1,7 @@
 use core::fmt;
 use std::{
-    io::{self, Write},
+    io::{self},
     process::Command,
-    vec,
 };
 
 pub fn repl_loop() {
@@ -40,16 +39,16 @@ struct Token {
     token_string: String,
 }
 
-fn print_tokens(tokens: &Vec<Token>) {
-    // NOTE : Used for debuggin but the complier wont shut about
-    // it.
-    for token in tokens {
-        print!(
-            "TokenType : {}, TokenString : {}\n",
-            token.token_type, token.token_string
-        );
-    }
-}
+// fn print_tokens(tokens: &Vec<Token>) {
+//     // NOTE : Used for debuggin but the complier wont shut about
+//     // it.
+//     for token in tokens {
+//         print!(
+//             "TokenType : {}, TokenString : {}\n",
+//             token.token_type, token.token_string
+//         );
+//     }
+// }
 
 fn process_tokens(tokens: &Vec<Token>) {
     // BUG : ls -aih | will print out an Error that | is invalid
