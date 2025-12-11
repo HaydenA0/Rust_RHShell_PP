@@ -75,14 +75,8 @@ fn process_tokens(tokens: &Vec<Token>) {
 
 fn execute_command(command: &String, args: &Vec<String>) {
     let mut command = Command::new(command);
-    if !args.is_empty() {
-        command.args(args);
-        // BUG : takes only one argument instead of the whole thing ls -ai -h
-        // wont work
-    }
-
+    command.args(args);
     let child = command.output().expect("Failed to start children");
-
     let output = if child.status.success() {
         String::from_utf8_lossy(&child.stdout)
     } else {
