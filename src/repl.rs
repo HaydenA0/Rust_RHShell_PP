@@ -74,17 +74,11 @@ fn process_tokens(tokens: &Vec<Token>) {
 }
 
 fn execute_command(command: &String, args: &Vec<String>) {
-    let mut command = Command::new(command);
-    command.args(args);
-    let child = command.output().expect("Failed to start children");
-    let output = if child.status.success() {
-        String::from_utf8_lossy(&child.stdout)
-    } else {
-        String::from_utf8_lossy(&child.stderr)
-    };
-
-    print!("{}", output);
-    io::stdout().flush().unwrap();
+    let mut child = Command::new(command)
+        .args(args)
+        .spawn()
+        .expect("Failed to start command");
+    let _ = child.wait().expect("Failed to wait on child");
 }
 
 fn tokenize(user_input: Vec<&str>) -> Vec<Token> {
@@ -122,7 +116,8 @@ fn tokenize(user_input: Vec<&str>) -> Vec<Token> {
 }
 
 fn process_input(user_input: &String) -> Vec<&str> {
-    let user_input_processed = user_input.trim(); // TODO: merge the in " " -> "ab de" becomes "abde"
+    let user_input_processed = user_input.trim();
+    // TODO: merge the in " " -> "ab de" becomes "abde"
     let user_input_processed = user_input_processed
         .split_whitespace()
         .collect::<Vec<&str>>();
