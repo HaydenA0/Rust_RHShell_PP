@@ -2,6 +2,7 @@ use core::fmt;
 use std::{
     io::{self, Write},
     process::Command,
+    vec,
 };
 
 pub fn repl_loop() {
@@ -53,32 +54,29 @@ fn print_tokens(tokens: &Vec<Token>) {
 fn process_tokens(tokens: &Vec<Token>) {
     // BUG : ls -aih | will print out an Error that | is invalid
     let mut command: String = String::new();
-    let mut args = String::new();
+    let mut args: Vec<String> = Vec::new();
     for token in tokens {
         match token.token_type {
             TokenType::Command => {
                 command = token.token_string.to_string();
             }
             TokenType::Argument => {
-                if args.is_empty() {
-                    args += token.token_string.as_str();
-                } else {
-                    args = args + " " + token.token_string.as_str();
-                }
+                let arg_string = token.token_string.as_str();
+                args.push(String::from(arg_string));
             }
             TokenType::Keyword => {
-                command = String::new();
-                args = args + token.token_string.as_str();
+                // command = String::new();
+                // args = args + token.token_string.as_str();
             }
         }
     }
     execute_command(&command, &args);
 }
 
-fn execute_command(command: &String, args: &String) {
+fn execute_command(command: &String, args: &Vec<String>) {
     let mut command = Command::new(command);
     if !args.is_empty() {
-        command.arg(args);
+        command.args(args);
         // BUG : takes only one argument instead of the whole thing ls -ai -h
         // wont work
     }
