@@ -1,9 +1,0 @@
-+ How to preprocess strings in rust
-  + How to remove any redudant whitespaces 
-+ How to tokenize in rust
-  + How to divide the string into sub strings
-  + How to divide them to categories based on their content
-+ How to do error handling in rust
-  + How to show error messages instead of crushing
-+ How to use syscalls in rust
-
