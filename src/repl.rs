@@ -13,7 +13,7 @@ pub fn repl_loop() {
             .expect("Error Reading");
 
         let user_input_processed = process_input(&user_input);
-        let tokens = tokenize(&user_input_processed);
+        let tokens = tokenize(user_input_processed);
         // print_tokens(&tokens); // NOTE : Just for debuggin, remove later
         process_tokens(&tokens);
     }
@@ -95,8 +95,8 @@ fn execute_command(command: &String, args: &String) {
     io::stdout().flush().unwrap();
 }
 
-fn tokenize(user_input: &String) -> Vec<Token> {
-    let user_seperated: Vec<&str> = user_input.split_whitespace().collect::<Vec<&str>>();
+fn tokenize(user_input: Vec<&str>) -> Vec<Token> {
+    let user_seperated: Vec<&str> = user_input;
     let mut tokens: Vec<Token> = Vec::new();
     let mut command_index = 0;
     // we need C style here
@@ -129,11 +129,10 @@ fn tokenize(user_input: &String) -> Vec<Token> {
     return tokens;
 }
 
-fn process_input(user_input: &String) -> String {
+fn process_input(user_input: &String) -> Vec<&str> {
     let user_input_processed = user_input.trim(); // TODO: merge the in " " -> "ab de" becomes "abde"
     let user_input_processed = user_input_processed
         .split_whitespace()
-        .collect::<Vec<&str>>()
-        .join(" ");
+        .collect::<Vec<&str>>();
     return user_input_processed;
 }
