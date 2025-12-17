@@ -18,13 +18,3 @@ pub fn repl_loop() {
         process_tokens(&tokens);
     }
 }
-
-// fn print_tokens(tokens: &Vec<Token>) {
-//     for token in tokens {
-//         print!(
-//             "TokenType : {}, TokenString : {}\n",
-//             token.token_type, token.token_string
-//         );
-//     }
-// }
-// print_tokens(&tokens);
