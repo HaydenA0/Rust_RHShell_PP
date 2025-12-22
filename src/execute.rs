@@ -1,4 +1,4 @@
-use std::process::Command;
+use std::{error::Error, process::Command};
 
 use crate::token::{Token, TokenType};
 
@@ -25,9 +25,13 @@ pub fn process_tokens(tokens: &Vec<Token>) {
 }
 
 fn execute_command(command: &String, args: &Vec<String>) {
-    let mut child = Command::new(command)
-        .args(args)
-        .spawn()
-        .expect("Failed to start command");
+    let child_result = Command::new(command).args(args).spawn();
+    let mut child = match child_result {
+        Ok(c) => c,
+        Err(e) => {
+            eprintln!("Failed to spawn : {e}\n");
+            return;
+        }
+    };
     let _ = child.wait().expect("Failed to wait on child");
 }
