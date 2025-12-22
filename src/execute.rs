@@ -1,5 +1,6 @@
-use std::{error::Error, process::Command};
+use std::process::Command;
 
+use crate::globals::{RED, RESET};
 use crate::token::{Token, TokenType};
 
 pub fn process_tokens(tokens: &Vec<Token>) {
@@ -28,8 +29,8 @@ fn execute_command(command: &String, args: &Vec<String>) {
     let child_result = Command::new(command).args(args).spawn();
     let mut child = match child_result {
         Ok(c) => c,
-        Err(e) => {
-            eprintln!("error {command}: {e}\n");
+        Err(_) => {
+            eprint!("{RED} No such command {RESET}\n");
             return;
         }
     };

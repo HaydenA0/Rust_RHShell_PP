@@ -1,4 +1,5 @@
 mod execute;
+mod globals;
 mod repl;
 mod token;
 mod tokenizer;

@@ -1,12 +1,13 @@
+use crate::globals::{RED, RESET};
 use crate::token::{Token, TokenType};
 
-pub fn tokenize(user_input: Vec<&str>) -> Vec<Token> {
-    let user_seperated: Vec<&str> = user_input;
+pub fn tokenize(user_input: Vec<String>) -> Vec<Token> {
+    let user_seperated: Vec<String> = user_input;
     let mut tokens: Vec<Token> = Vec::new();
     let mut command_index = 0;
     // we need C style here
     for i in 0..user_seperated.len() {
-        let section = user_seperated[i];
+        let section = user_seperated[i].clone();
         if i == command_index {
             let token = Token {
                 token_type: TokenType::Command,
@@ -34,11 +35,50 @@ pub fn tokenize(user_input: Vec<&str>) -> Vec<Token> {
     return tokens;
 }
 
-pub fn process_input(user_input: &String) -> Vec<&str> {
-    let user_input_processed = user_input.trim();
-    // TODO: merge the in " " -> "ab de" becomes "abde"
-    let user_input_processed = user_input_processed
-        .split_whitespace()
-        .collect::<Vec<&str>>();
+// TODO: merge the in " " -> "ab de" becomes "abde"
+pub fn process_input(user_input: &String) -> Vec<String> {
+    let user_input_raw = user_input.trim();
+    let mut user_input_processed: Vec<String> = Vec::new();
+    let mut buffer: String = String::new();
+    let mut is_quoted = false;
+
+    for c in user_input_raw.chars() {
+        if c == ' ' {
+            if is_quoted {
+                buffer.push(c);
+                continue;
+            } else {
+                let buffer_copy = buffer.clone();
+                if !buffer.is_empty() {
+                    user_input_processed.push(buffer_copy);
+                }
+                buffer.clear();
+            }
+        } else if c == '"' {
+            if is_quoted {
+                let buffer_copy = buffer.clone();
+                user_input_processed.push(buffer_copy);
+                buffer.clear();
+            } else {
+                is_quoted = true;
+            }
+        } else {
+            buffer.push(c);
+        }
+    }
+    let buffer_copy = buffer.clone();
+    if !buffer.is_empty() {
+        user_input_processed.push(buffer_copy);
+    }
+    println!(
+        "debugging : user_input_processed = {:?}",
+        user_input_processed
+    );
+
+    // debugging
+    print!(
+        "From process_input function : number of args {RED}{}{RESET}\n",
+        user_input_processed.len()
+    );
     return user_input_processed;
 }
