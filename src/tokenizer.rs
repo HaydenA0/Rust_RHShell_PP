@@ -70,15 +70,6 @@ pub fn process_input(user_input: &String) -> Vec<String> {
     if !buffer.is_empty() {
         user_input_processed.push(buffer_copy);
     }
-    println!(
-        "debugging : user_input_processed = {:?}",
-        user_input_processed
-    );
 
-    // debugging
-    print!(
-        "From process_input function : number of args {RED}{}{RESET}\n",
-        user_input_processed.len()
-    );
     return user_input_processed;
 }
