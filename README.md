@@ -8,3 +8,8 @@ project was so tangled, bad memory managment
 and memory leaks everwhere. I want to build
 a shell now, so I will be focusing on the application
 side.
+
+
+Note : This is now on pause, I need to learn Rust syntax
+and features then understand it's philosophy, after that 
+I will comeback
