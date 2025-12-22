@@ -29,7 +29,7 @@ fn execute_command(command: &String, args: &Vec<String>) {
     let mut child = match child_result {
         Ok(c) => c,
         Err(e) => {
-            eprintln!("Failed to spawn : {e}\n");
+            eprintln!("error {command}: {e}\n");
             return;
         }
     };
