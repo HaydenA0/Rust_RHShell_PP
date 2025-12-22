@@ -1,8 +1,6 @@
-use crate::globals::{RED, RESET};
 use crate::token::{Token, TokenType};
 
-pub fn tokenize(user_input: Vec<String>) -> Vec<Token> {
-    let user_seperated: Vec<String> = user_input;
+pub fn tokenize(user_seperated: Vec<String>) -> Vec<Token> {
     let mut tokens: Vec<Token> = Vec::new();
     let mut command_index = 0;
     // we need C style here
@@ -35,8 +33,8 @@ pub fn tokenize(user_input: Vec<String>) -> Vec<Token> {
     return tokens;
 }
 
-// TODO: merge the in " " -> "ab de" becomes "abde"
 pub fn process_input(user_input: &String) -> Vec<String> {
+    // NOTE: Clean this mess of abomination of parsing
     let user_input_raw = user_input.trim();
     let mut user_input_processed: Vec<String> = Vec::new();
     let mut buffer: String = String::new();
@@ -56,6 +54,7 @@ pub fn process_input(user_input: &String) -> Vec<String> {
             }
         } else if c == '"' {
             if is_quoted {
+                is_quoted = false;
                 let buffer_copy = buffer.clone();
                 user_input_processed.push(buffer_copy);
                 buffer.clear();
@@ -70,6 +69,5 @@ pub fn process_input(user_input: &String) -> Vec<String> {
     if !buffer.is_empty() {
         user_input_processed.push(buffer_copy);
     }
-
     return user_input_processed;
 }
