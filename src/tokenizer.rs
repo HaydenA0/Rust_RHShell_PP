@@ -34,7 +34,7 @@ pub fn tokenize(user_seperated: Vec<String>) -> Vec<Token> {
 }
 
 pub fn process_input(user_input: &String) -> Vec<String> {
-    // NOTE: Clean this mess of abomination of parsing
+    // NOTE: Clean this abomination of parsing
     let user_input_raw = user_input.trim();
     let mut user_input_processed: Vec<String> = Vec::new();
     let mut buffer: String = String::new();

@@ -1,0 +1,6 @@
+TODO List:
+- [ ] Refactor input parsing in `src/tokenizer.rs` (replace manual character loop with a more robust approach).
+- [ ] Implement `Pipeline` and `SimpleCommand` structs in `src/execute.rs` for better command management.
+- [ ] Fix bug in `src/execute.rs` preventing correct pipe (`|`) handling.
+- [ ] Implement handling for remaining keywords (`&`, `;`, `>`) in `src/execute.rs`.
+- [ ] Improve error handling and replace `panic!` with proper Result-based error management.
